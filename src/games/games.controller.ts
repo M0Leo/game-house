@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
-import { Game, Prisma } from '@prisma/client';
+import { Game } from '@prisma/client';
 import { CreateGameDto } from './dto/createGame.dto';
 import { UpdateGameDto } from './dto/updateGameDto';
 import { GetGamesDto } from './dto/GetGamesDto';
@@ -17,7 +17,6 @@ import { GetGamesDto } from './dto/GetGamesDto';
 export class GamesController {
   constructor(private readonly gameService: GamesService) {}
 
-  @Get()
   @Get()
   async getGames(@Body() getGamesDto: GetGamesDto): Promise<Game[]> {
     const games = await this.gameService.getGames(
@@ -29,6 +28,7 @@ export class GamesController {
     );
     return games;
   }
+
   @Get(':id')
   async getGame(@Param('id') id: string) {
     return this.gameService.game(parseInt(id));
