@@ -1,58 +1,51 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Game API
+This API provides endpoints for managing a catalog of games and their associated genres.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Prerequisites
+Before you can run this API, you will need the following:
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
+- Node.js (version 14 or higher)
+- MySQL (version 5 or higher)
 
 ## Installation
-
-```bash
-$ npm install
+1. Clone the repository: git clone https://github.com/your-username/game-catalog-api.git
+2. Install dependencies: npm install
+3. Create a MySQL database for the API
+4. Copy the .env  file to a new file named .env and set the environment variables accordingly:
+``` bash
+DATABASE_URL='mysql://user:password@localhost:3306/game-house'
 ```
+5. Run the database migrations: npx prisma migrate
+6. Start the API server: npm run start
+## Usage
+Once the API is running, you can access the following endpoints:
 
-## Running the app
+### GET /games
+Returns a list of games. Optional query parameters:
 
-```bash
-# development
-$ npm run start
+- **skip** : Number of records to skip. Default: 0.
+- **take**: Number of records to return. Default: 10.
+- **cursor** : The cursor to use for pagination. This should be the id of the last record returned in the previous request.
+GET /games/:id
+Returns a single game by its id.
 
-# watch mode
-$ npm run start:dev
+### POST /games
+Creates a new game. Required request body:
 
-# production mode
-$ npm run start:prod
+```json
+{
+  "name": string,
+  "description": string,
+  "rating": number,
+  "release_date": Date | string (in ISO format),
+  "genreIds": number[]
+}
 ```
+### PUT /games/:id
+Updates an existing game by its id. Required request body:
 
-## Test
+### DELETE /games/:id
+Deletes a game by its id.
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
+## Error Handling
+If the API encounters an error, it will return a JSON response with an error property containing a descriptive error message.
