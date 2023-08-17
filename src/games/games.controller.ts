@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Post, Body, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Query,
+  Delete,
+} from '@nestjs/common';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/createGame.dto';
 import { GetGamesDto } from './dto/GetGamesDto';
@@ -21,5 +29,10 @@ export class GamesController {
   @Post()
   async addGame(@Body() data: CreateGameDto) {
     return this.gameService.create(data);
+  }
+
+  @Delete()
+  async remove(@Param('id') id: string) {
+    return this.gameService.deleteGame(id);
   }
 }

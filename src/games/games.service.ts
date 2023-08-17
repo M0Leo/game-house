@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Game } from './games.entity';
 import { Repository } from 'typeorm';
@@ -27,7 +31,20 @@ export class GamesService {
       const game = await this.gameRepository.create(body);
       return await this.gameRepository.save(game);
     } catch (error) {
-      return error;
+      throw new InternalServerErrorException('Failed to create');
+    }
+  }
+
+  async deleteGame(id: string) {
+    try {
+      const game = await this.gameRepository.softDelete(+id);
+      if (!game) {
+        throw new NotFoundException('Game with id' + id);
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to remove the specefied game',
+      );
     }
   }
 }
