@@ -1,16 +1,6 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Post,
-  Body,
-  Put,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Query } from '@nestjs/common';
 import { GamesService } from './games.service';
-import { Game } from '@prisma/client';
 import { CreateGameDto } from './dto/createGame.dto';
-import { UpdateGameDto } from './dto/updateGameDto';
 import { GetGamesDto } from './dto/GetGamesDto';
 
 @Controller('games')
@@ -18,14 +8,8 @@ export class GamesController {
   constructor(private readonly gameService: GamesService) {}
 
   @Get()
-  async getGames(@Body() getGamesDto: GetGamesDto): Promise<Game[]> {
-    const games = await this.gameService.getGames(
-      getGamesDto.skip,
-      getGamesDto.take,
-      getGamesDto.orderBy,
-      getGamesDto.where,
-      getGamesDto.cursor,
-    );
+  async getGames(@Query() getGamesDto: GetGamesDto) {
+    const games = await this.gameService.getGames(getGamesDto);
     return games;
   }
 
@@ -35,25 +19,7 @@ export class GamesController {
   }
 
   @Post()
-  async addGame(
-    @Body() data: CreateGameDto,
-    @Body('genreIds') genreIds: number[],
-  ) {
-    return this.gameService.createGame(data, genreIds);
-  }
-
-  @Put(':id')
-  async updateGame(
-    @Param('id') id: string,
-    @Body() updateGameDto: UpdateGameDto,
-    @Body('genreIds') genreIds: number[],
-  ) {
-    return this.gameService.updateGame(parseInt(id), updateGameDto, genreIds);
-  }
-
-  @Delete(':id')
-  async deleteGame(@Param('id') id: number): Promise<Game> {
-    const game = await this.gameService.deleteGame(id);
-    return game;
+  async addGame(@Body() data: CreateGameDto) {
+    return this.gameService.create(data);
   }
 }

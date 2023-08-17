@@ -1,7 +1,6 @@
 export class GetGamesDto {
   skip?: number;
   take?: number;
-  orderBy?: { [key: string]: 'asc' | 'desc' };
+  orderBy?: { [key: string]: 'ASK' | 'DESC' };
   where?: any;
-  cursor?: any;
 }
