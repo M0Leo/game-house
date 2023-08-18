@@ -9,5 +9,4 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   database: 'games',
   synchronize: true,
   autoLoadEntities: true,
-  logging: true,
 };

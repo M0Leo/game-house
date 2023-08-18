@@ -35,12 +35,13 @@ export class GamesService {
     }
   }
 
-  async deleteGame(id: string) {
+  async deleteGame(id: number) {
     try {
-      const game = await this.gameRepository.softDelete(+id);
-      if (!game) {
+      const game = await this.gameRepository.delete(id);
+      if (game.affected === 0) {
         throw new NotFoundException('Game with id' + id);
       }
+      return game;
     } catch (error) {
       throw new InternalServerErrorException(
         'Failed to remove the specefied game',

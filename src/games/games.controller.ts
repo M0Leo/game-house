@@ -31,8 +31,12 @@ export class GamesController {
     return this.gameService.create(data);
   }
 
-  @Delete()
+  @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.gameService.deleteGame(id);
+    try {
+      return this.gameService.deleteGame(parseInt(id));
+    } catch (error) {
+      return error;
+    }
   }
 }
