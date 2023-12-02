@@ -3,12 +3,14 @@ import UserEntity from './users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import CreateUserDto from 'src/auth/dto/CreateUser.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async findOne(id: number) {
