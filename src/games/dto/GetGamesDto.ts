@@ -3,4 +3,6 @@ export class GetGamesDto {
   take?: number;
   orderBy?: { [key: string]: 'ASK' | 'DESC' };
   where?: any;
+  genre?: string;
+  platform?: string;
 }

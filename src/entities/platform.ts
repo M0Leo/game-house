@@ -1,17 +1,14 @@
-import { Game } from 'src/games/games.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Game } from './games';
 
 @Entity()
-export class Genre {
+export class Platform {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
-  @Column()
-  description: string;
-
-  @ManyToMany(() => Game, (game) => game.genres)
+  @ManyToMany(() => Game, (game) => game.platform)
   games: Game[];
 }

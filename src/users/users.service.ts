@@ -11,7 +11,7 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async findOne(id: number) {
     const user = await this.userRepository.findOne({

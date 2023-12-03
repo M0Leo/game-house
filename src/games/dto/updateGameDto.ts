@@ -1,6 +1,10 @@
 import { IsString, IsDate, IsNumber, IsNotEmpty } from 'class-validator';
 
 export class UpdateGameDto {
+  @IsNumber()
+  @IsNotEmpty()
+  id: number;
+
   @IsString()
   @IsNotEmpty()
   title: string;

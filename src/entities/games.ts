@@ -1,5 +1,5 @@
 import { IsOptional } from 'class-validator';
-import { Genre } from 'src/genres/genres.entity';
+import { Genre } from 'src/entities/genres';
 import {
   Column,
   Entity,
@@ -7,6 +7,7 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Platform } from './platform';
 
 @Entity()
 export class Game {
@@ -20,9 +21,6 @@ export class Game {
   release_date: Date;
 
   @Column()
-  rating: number;
-
-  @Column()
   publisher: string;
 
   @Column({ default: null })
@@ -32,6 +30,11 @@ export class Game {
   @Column({ default: null })
   @IsOptional()
   cover_image_url: string;
+
+  @ManyToMany(() => Platform, (platform) => platform.games)
+  @JoinTable()
+  @IsOptional()
+  platform: Platform[];
 
   @ManyToMany(() => Genre, (genre) => genre.games)
   @JoinTable()
