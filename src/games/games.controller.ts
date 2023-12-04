@@ -11,7 +11,6 @@ import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/CreateGame.dto';
 import { GetGamesDto } from './dto/GetGamesDto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Game } from 'src/entities/games';
 import { GameDto } from './dto/GameDto';
 
 @ApiTags('games')
