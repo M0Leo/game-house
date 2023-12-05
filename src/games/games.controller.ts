@@ -6,12 +6,14 @@ import {
   Body,
   Query,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/CreateGame.dto';
 import { GetGamesDto } from './dto/GetGamesDto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GameDto } from './dto/GameDto';
+import { UpdateGameDto } from './dto/UpdateGameDto';
 
 @ApiTags('games')
 @Controller('games')
@@ -53,6 +55,11 @@ export class GamesController {
   @Post()
   async createGame(@Body() data: CreateGameDto) {
     return this.gameService.create(data);
+  }
+
+  @Put()
+  async updateGame(@Body() data: UpdateGameDto) {
+    return this.gameService.updateGame(data);
   }
 
   @Delete(':id')

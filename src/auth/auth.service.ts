@@ -1,50 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import CreateUserDto from './dto/CreateUser.dto';
+import User from 'src/users/users.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
-  async validateUser(email: string, password: string) {
+  async validateUser(email: string, password: string): Promise<User> {
     const user = await this.userService.findOneByEmail(email);
-    if (user && user.password === password) {
-      const { password, ...result } = user;
-      return result;
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-    return null;
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid password');
+    }
+
+    return user;
   }
 
-  async validateUserById(id: number) {
+  async validateUserById(id: number): Promise<User> {
     const user = await this.userService.findOne(id);
-    if (user) {
-      const { password, ...result } = user;
-      return result;
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-    return null;
+    return user;
   }
 
-  async refreshTokens(refreshToken: any) {
-    try {
-      const payload = { sub: refreshToken.id };
-      const user = await this.validateUserById(payload.sub);
-      if (!user) {
-        return null;
-      }
-      const newAccessToken = this.jwtService.sign(payload);
-      return {
-        access_token: newAccessToken,
-      };
-    } catch (err) {
-      return console.log(err);
+  async refreshTokens(refreshToken: any): Promise<{ access_token: string }> {
+    const payload = { sub: refreshToken.id };
+    const user = await this.validateUserById(payload.sub);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
     }
+    const newAccessToken = this.jwtService.sign(payload);
+    return {
+      access_token: newAccessToken,
+    };
   }
 
-  async login(user: any) {
+  async login(
+    data: any,
+  ): Promise<{ access_token: string; refresh_token: string }> {
+    const user = await this.validateUser(data.email, data.password);
     const payload = { sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
@@ -54,15 +63,11 @@ export class AuthService {
     };
   }
 
-  async signUp(authDto: CreateUserDto) {
-    try {
-      const user = await this.userService.create(authDto);
-      const payload = { sub: user.id };
-      return {
-        access_token: this.jwtService.sign(payload),
-      };
-    } catch (err) {
-      console.log(err);
-    }
+  async signUp(authDto: CreateUserDto): Promise<{ access_token: string }> {
+    const user = await this.userService.create(authDto);
+    const payload = { sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }

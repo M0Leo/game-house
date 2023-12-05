@@ -6,7 +6,6 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { GenreModule } from './genre/genre.module';
 import { GenresModule } from './genres/genres.module';
 
 @Module({
@@ -21,7 +20,6 @@ import { GenresModule } from './genres/genres.module';
     UsersModule,
     AuthModule,
     EventEmitterModule.forRoot(),
-    GenreModule,
     GenresModule,
   ],
   controllers: [],
