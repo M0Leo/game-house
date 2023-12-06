@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { GenresService } from './genres.service';
 
 @Controller('genres')
@@ -18,7 +26,7 @@ export class GenresController {
   }
 
   @Post()
-  async createGenre(name: string) {
+  async createGenre(@Body('name') name: string) {
     const genre = await this.genresService.createGenre(name);
     return genre;
   }

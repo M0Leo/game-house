@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsDateString, Length, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsDateString,
+  Length,
+  IsArray,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateGameDto {
   @IsString()
@@ -22,6 +28,7 @@ export class CreateGameDto {
   description: string;
 
   @IsArray()
+  @IsOptional()
   @ApiProperty({
     description: 'The genres of the game',
     type: [Number],
@@ -30,6 +37,7 @@ export class CreateGameDto {
   genreIds: number[];
 
   @IsArray()
+  @IsOptional()
   @ApiProperty({
     description: 'The platforms of the game',
     type: [Number],

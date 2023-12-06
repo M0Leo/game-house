@@ -25,7 +25,8 @@ export class GenresService {
   }
 
   async createGenre(name: string) {
-    const genre = await this.genresRepository.save({ name });
+    const genre = this.genresRepository.create({ name });
+    await this.genresRepository.save(genre);
     return genre;
   }
 

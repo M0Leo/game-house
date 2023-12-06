@@ -26,25 +26,16 @@ export class GamesService {
   }
 
   async getGames(getGamesDto: GetGamesDto) {
+    const { skip = 0, take = 10, orderBy } = getGamesDto;
     const [games, total] = await this.gameRepository.findAndCount({
-      select: {
-        platform: {
-          name: true,
-        },
-        genres: {
-          name: true,
-        },
-      },
-      relations: {
-        platform: true,
-        genres: true,
-      },
-      skip: getGamesDto.skip || 0,
-      take: getGamesDto.take || 10,
+      relations: ['genres', 'platform'],
+      skip,
+      take,
       order: {
-        release_date: getGamesDto.orderBy,
+        release_date: orderBy,
       },
     });
+
     return {
       data: games,
       count: total,
@@ -76,15 +67,19 @@ export class GamesService {
   async create(body: CreateGameDto) {
     try {
       const { genreIds, platformIds, ...data } = body;
-      const game = await this.gameRepository.create(data);
-      game.genres = await this.genreRepository.findBy({ id: In(genreIds) });
-      game.platform = await this.genreRepository.findBy({
-        id: In(platformIds),
-      });
+      const game = this.gameRepository.create(data);
+      if (genreIds) {
+        game.genres = await this.genreRepository.findBy({ id: In(genreIds) });
+      }
+      if (platformIds) {
+        game.platform = await this.genreRepository.findBy({
+          id: In(platformIds),
+        });
+      }
       await this.gameRepository.save(game);
       return game;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to create');
+      throw new InternalServerErrorException('Failed to create a game');
     }
   }
 
