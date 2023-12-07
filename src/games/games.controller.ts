@@ -8,6 +8,8 @@ import {
   Delete,
   Put,
   UseGuards,
+  NotFoundException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/CreateGame.dto';
@@ -39,8 +41,12 @@ export class GamesController {
   })
   @Get()
   async list(@Query() getGamesDto: GetGamesDto) {
-    const games = await this.gameService.getGames(getGamesDto);
-    return games;
+    try {
+      const games = await this.gameService.getGames(getGamesDto);
+      return games;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   @ApiOperation({ summary: 'Get game by id' })
@@ -51,7 +57,13 @@ export class GamesController {
   })
   @Get(':id')
   async getGame(@Param('id') id: string) {
-    return this.gameService.game(parseInt(id));
+    try {
+      const game = await this.gameService.getGameById(parseInt(id));
+      if (!game) throw new NotFoundException(`Game with id ${id} found`);
+      return game;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   @ApiOperation({ summary: 'Create game' })
@@ -68,7 +80,11 @@ export class GamesController {
   @Roles(UserRole.ADMIN)
   @Post()
   async createGame(@Body() data: CreateGameDto) {
-    return this.gameService.create(data);
+    try {
+      await this.gameService.create(data);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   @ApiBearerAuth()
@@ -76,7 +92,13 @@ export class GamesController {
   @Roles(UserRole.ADMIN)
   @Put()
   async updateGame(@Body() data: UpdateGameDto) {
-    return this.gameService.updateGame(data);
+    try {
+      const game = await this.gameService.getGameById(data.id);
+      if (!game) throw new NotFoundException(`Game with id ${data.id} found`);
+      await this.gameService.updateGame(data);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   @ApiBearerAuth()
@@ -85,9 +107,11 @@ export class GamesController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      return this.gameService.deleteGame(parseInt(id));
+      const game = await this.gameService.getGameById(parseInt(id));
+      if (!game) throw new NotFoundException(`Game with id ${id} found`);
+      await this.gameService.deleteGame(game.id);
     } catch (error) {
-      return error;
+      throw new InternalServerErrorException(error);
     }
   }
 }

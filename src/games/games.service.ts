@@ -20,8 +20,8 @@ export class GamesService {
     private genreRepository: Repository<Genre>,
   ) {}
 
-  async game(id: number) {
-    const game = await this.gameRepository.findOneBy({ id });
+  async getGameById(id: number) {
+    const game = await this.gameRepository.findOneByOrFail({ id });
     return game;
   }
 
@@ -65,52 +65,44 @@ export class GamesService {
   }
 
   async create(body: CreateGameDto) {
-    try {
-      const { genreIds, platformIds, ...data } = body;
-      const game = this.gameRepository.create(data);
-      if (genreIds) {
-        game.genres = await this.genreRepository.findBy({ id: In(genreIds) });
-      }
-      if (platformIds) {
-        game.platform = await this.genreRepository.findBy({
-          id: In(platformIds),
-        });
-      }
-      await this.gameRepository.save(game);
-      return game;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to create a game');
+    const { genreIds, platformIds, ...data } = body;
+    const game = this.gameRepository.create(data);
+    if (genreIds) {
+      game.genres = await this.genreRepository.findBy({ id: In(genreIds) });
     }
+    if (platformIds) {
+      game.platform = await this.genreRepository.findBy({
+        id: In(platformIds),
+      });
+    }
+    await this.gameRepository.save(game);
+    return game;
   }
 
-  async updateGame(updateGameDto: UpdateGameDto) {
-    try {
-      const game = await this.gameRepository.update(
-        updateGameDto.id,
-        updateGameDto,
-      );
-      if (game.affected === 0) {
-        throw new NotFoundException('Game with id' + updateGameDto.id);
-      }
-      return game;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Failed to update the specefied game',
-      );
-    }
+  async updateGame(updateGameDto: UpdateGameDto): Promise<boolean> {
+    const game = await this.gameRepository.update(
+      updateGameDto.id,
+      updateGameDto,
+    );
+    return game.affected > 0;
   }
 
-  async deleteGame(id: number) {
-    try {
-      const game = await this.gameRepository.delete(id);
-      if (game.affected === 0) {
-        throw new NotFoundException('Game with id' + id);
-      }
-      return game;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Failed to remove the specefied game',
-      );
+  async removeGenreFromGame(id: number, genreId: number) {
+    const game = await this.getGameById(id);
+    if (!game) {
+      throw new NotFoundException('Game with id' + id);
     }
+    const genre = await this.genreRepository.findOneBy({ id: genreId });
+    if (!genre) {
+      throw new NotFoundException('Genre with id' + genreId);
+    }
+    game.genres = game.genres.filter((g) => g.id !== genreId);
+    await this.gameRepository.save(game);
+    return game;
+  }
+
+  async deleteGame(id: number): Promise<boolean> {
+    const game = await this.gameRepository.delete(id);
+    return game.affected > 0;
   }
 }
