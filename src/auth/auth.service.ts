@@ -56,7 +56,9 @@ export class AuthService {
     const user = await this.validateUser(data.email, data.password);
     const payload = { sub: user.id };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, {
+        expiresIn: '15m',
+      }),
       refresh_token: this.jwtService.sign(payload, {
         expiresIn: '7d',
       }),

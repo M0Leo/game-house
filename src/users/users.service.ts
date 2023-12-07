@@ -3,15 +3,14 @@ import UserEntity from './users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import CreateUserDto from 'src/auth/dto/CreateUser.dto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async findOne(id: number) {
     const user = await this.userRepository.findOne({
@@ -32,7 +31,16 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const user = await this.userRepository.create(createUserDto);
-    return this.userRepository.save(user);
+    try {
+      const { password } = createUserDto;
+      const hashed = await bcrypt.hash(password, 10);
+      const user = this.userRepository.create({
+        ...createUserDto,
+        password: hashed,
+      });
+      return this.userRepository.save(user);
+    } catch (err) {
+      throw new Error('Something went wrong');
+    }
   }
 }
