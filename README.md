@@ -34,11 +34,14 @@ Creates a new game. Required request body:
 
 ```json
 {
-  "name": string,
-  "description": string,
-  "rating": number,
-  "release_date": Date | string (in ISO format),
-  "genreIds": number[]
+  "id": 1,
+  "title": "The Witcher 3: Wild Hunt",
+  "release_date": "2015-05-18T00:00:00.000Z",
+  "publisher": "CD Projekt Red",
+  "description": "You are Geralt of Rivia, mercenary monster slayer. Before you stands a war-torn, monster-infested continent you can explore at will. Your current contract? Tracking down Ciri —   the Child of Prophecy, a living weapon that can alter the shape of the world.",
+  "cover_image_url": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r2t.jpg",
+  "genres": ["RPG", "Adventure"],
+  "platform": ["PC", "PlayStation 4", "Xbox One"]
 }
 ```
 ### PUT /games/:id
