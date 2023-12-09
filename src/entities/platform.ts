@@ -9,6 +9,6 @@ export class Platform {
   @Column()
   name: string;
 
-  @ManyToMany(() => Game, (game) => game.platform)
+  @ManyToMany(() => Game, (game) => game.platform, { cascade: true })
   games: Game[];
 }
