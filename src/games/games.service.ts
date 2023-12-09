@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Game } from '../entities/games';
 import { In, Repository } from 'typeorm';
@@ -26,9 +22,22 @@ export class GamesService {
   }
 
   async getGames(getGamesDto: GetGamesDto) {
-    const { skip = 0, take = 10, orderBy } = getGamesDto;
+    const { skip = 0, take = 10, orderBy, genre, platform } = getGamesDto;
+
     const [games, total] = await this.gameRepository.findAndCount({
       relations: ['genres', 'platform'],
+      where: {
+        ...(genre && {
+          genres: {
+            name: genre,
+          },
+        }),
+        ...(platform && {
+          platform: {
+            name: platform,
+          },
+        }),
+      },
       skip,
       take,
       order: {

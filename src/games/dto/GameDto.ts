@@ -23,4 +23,10 @@ export class GameDto {
     example: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1r2t.jpg',
   })
   cover_image_url: string;
+
+  @ApiProperty({ type: [String], example: ['RPG', 'Adventure'] })
+  genres: string[];
+
+  @ApiProperty({ type: [String], example: ['PC', 'PlayStation 4', 'Xbox One'] })
+  platform: string[];
 }

@@ -68,12 +68,10 @@ export class GamesController {
 
   @ApiOperation({ summary: 'Create game' })
   @ApiBody({
-    description: 'Create game',
     type: CreateGameDto,
   })
   @ApiResponse({
     status: 201,
-    description: 'Create game',
   })
   @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
@@ -81,13 +79,12 @@ export class GamesController {
   @Post()
   async createGame(@Body() data: CreateGameDto) {
     try {
-      await this.gameService.create(data);
+      return await this.gameService.create(data);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Put()
@@ -101,7 +98,6 @@ export class GamesController {
     }
   }
 
-  @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Delete(':id')
