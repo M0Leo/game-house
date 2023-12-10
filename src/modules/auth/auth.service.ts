@@ -8,6 +8,7 @@ import CreateUserDto from './dto/CreateUser.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import User from '../users/users.entity';
+import { NotFoundIdException } from 'src/errors/notFoundId.exception';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +34,7 @@ export class AuthService {
   async validateUserById(id: number): Promise<User> {
     const user = await this.userService.findOne(id);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundIdException(id);
     }
     return user;
   }

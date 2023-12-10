@@ -64,6 +64,8 @@ export class GamesController {
     status: 201,
   })
   @ApiBearerAuth()
+  @UseGuards(JwtGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Post()
   async createGame(@Body() data: CreateGameDto) {
     return await this.gameService.create(data);

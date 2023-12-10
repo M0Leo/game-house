@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Genre } from 'src/entities/genres';
 import { In, Repository } from 'typeorm';
+import CreateGenreDto from './dto/CreateGenreDto';
 
 @Injectable()
 export class GenresService {
@@ -24,8 +25,8 @@ export class GenresService {
     return genre;
   }
 
-  async createGenre(name: string) {
-    const genre = this.genresRepository.create({ name });
+  async createGenre(createGenreDto: CreateGenreDto) {
+    const genre = this.genresRepository.create(createGenreDto);
     await this.genresRepository.save(genre);
     return genre;
   }
