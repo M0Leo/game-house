@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { GamesModule } from './games/games.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getTypeOrmConfig } from './config/typeorm.config';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { GenresModule } from './genres/genres.module';
+import { GamesModule } from './modules/games/games.module';
+import { UsersModule } from './modules/users/users.module';
+import { GenresModule } from './modules/genres/genres.module';
+import { AuthModule } from './modules/auth';
 
 @Module({
   imports: [

@@ -23,10 +23,10 @@ import {
 } from '@nestjs/swagger';
 import { GameDto } from './dto/GameDto';
 import { UpdateGameDto } from './dto/UpdateGameDto';
-import { JwtGuard } from 'src/auth/guards/auth.guard';
 import { Roles } from 'src/decorators/role.decorator';
-import { UserRole } from 'src/users/users.entity';
-import { RolesGuard } from 'src/auth/guards/role.guard';
+import { JwtGuard } from '../auth/guards/auth.guard';
+import { RolesGuard } from '../auth/guards/role.guard';
+import { UserRole } from '../users/users.entity';
 
 @ApiTags('games')
 @Controller('games')
@@ -41,12 +41,8 @@ export class GamesController {
   })
   @Get()
   async list(@Query() getGamesDto: GetGamesDto) {
-    try {
-      const games = await this.gameService.getGames(getGamesDto);
-      return games;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
+    const games = await this.gameService.getGames(getGamesDto);
+    return games;
   }
 
   @ApiOperation({ summary: 'Get game by id' })
@@ -56,14 +52,9 @@ export class GamesController {
     type: GameDto,
   })
   @Get(':id')
-  async getGame(@Param('id') id: string) {
-    try {
-      const game = await this.gameService.getGameById(parseInt(id));
-      if (!game) throw new NotFoundException(`Game with id ${id} found`);
-      return game;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
+  async getGame(@Param('id') id: number) {
+    const game = await this.gameService.getGameById(id);
+    return game;
   }
 
   @ApiOperation({ summary: 'Create game' })

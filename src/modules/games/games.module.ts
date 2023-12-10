@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { GamesController } from './games.controller';
 import { GamesService } from './games.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Game } from '../entities/games';
 import { Genre } from 'src/entities/genres';
 import { Platform } from 'src/entities/platform';
+import { Game } from 'src/entities/games';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Game, Genre, Platform])],

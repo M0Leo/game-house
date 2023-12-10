@@ -1,9 +1,7 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { UsersService } from './users.service';
-import { JwtGuard } from 'src/auth/guards/auth.guard';
-import { UserRole } from './users.entity';
-import { Roles } from 'src/decorators/role.decorator';
+import { JwtGuard } from '../auth/guards/auth.guard';
 
 @Controller('users')
 export class UsersController {

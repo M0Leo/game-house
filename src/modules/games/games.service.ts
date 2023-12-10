@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Game } from '../entities/games';
 import { In, Repository } from 'typeorm';
 import { CreateGameDto } from './dto/CreateGame.dto';
 import { GetGamesDto } from './dto/GetGamesDto';
 import { UpdateGameDto } from './dto/UpdateGameDto';
 import { Genre } from 'src/entities/genres';
+import { NotFoundIdException } from 'src/errors/notFoundId.exception';
+import { Game } from 'src/entities/games';
 
 @Injectable()
 export class GamesService {
@@ -17,10 +18,11 @@ export class GamesService {
   ) {}
 
   async getGameById(id: number) {
-    const game = await this.gameRepository.findOneOrFail({
+    const game = await this.gameRepository.findOne({
       where: { id },
       relations: ['genres', 'platform'],
     });
+    if (!game) throw new NotFoundIdException(id);
     return game;
   }
 
