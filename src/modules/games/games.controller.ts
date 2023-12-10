@@ -9,7 +9,6 @@ import {
   Put,
   UseGuards,
   NotFoundException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/CreateGame.dto';
@@ -65,40 +64,26 @@ export class GamesController {
     status: 201,
   })
   @ApiBearerAuth()
-  @UseGuards(JwtGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
   @Post()
   async createGame(@Body() data: CreateGameDto) {
-    try {
-      return await this.gameService.create(data);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
+    return await this.gameService.create(data);
   }
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Put()
   async updateGame(@Body() data: UpdateGameDto) {
-    try {
-      const game = await this.gameService.getGameById(data.id);
-      if (!game) throw new NotFoundException(`Game with id ${data.id} found`);
-      await this.gameService.updateGame(data);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
+    const game = await this.gameService.getGameById(data.id);
+    if (!game) throw new NotFoundException(`Game with id ${data.id} found`);
+    return await this.gameService.updateGame(data);
   }
 
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    try {
-      const game = await this.gameService.getGameById(parseInt(id));
-      if (!game) throw new NotFoundException(`Game with id ${id} found`);
-      await this.gameService.deleteGame(game.id);
-    } catch (error) {
-      throw new InternalServerErrorException(error);
-    }
+    const game = await this.gameService.getGameById(parseInt(id));
+    if (!game) throw new NotFoundException(`Game with id ${id} found`);
+    await this.gameService.deleteGame(game.id);
   }
 }
