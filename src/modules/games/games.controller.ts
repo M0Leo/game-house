@@ -63,7 +63,6 @@ export class GamesController {
   @ApiResponse({
     status: 201,
   })
-  @ApiBearerAuth()
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post()
@@ -71,6 +70,10 @@ export class GamesController {
     return await this.gameService.create(data);
   }
 
+  @ApiOperation({ summary: 'Update game' })
+  @ApiBody({
+    type: UpdateGameDto,
+  })
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Put()
@@ -80,6 +83,10 @@ export class GamesController {
     return await this.gameService.updateGame(data);
   }
 
+  @ApiOperation({ summary: 'Delete game' })
+  @ApiResponse({
+    status: 204,
+  })
   @UseGuards(JwtGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Delete(':id')
