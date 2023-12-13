@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { setupSwagger } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,15 +12,8 @@ async function bootstrap() {
       exceptionFactory: (errors) => new BadRequestException(errors),
     }),
   );
-  const config = new DocumentBuilder()
-    .setTitle('Games API')
-    .setDescription('The Games API description')
-    .setVersion('1.0')
-    .addTag('games')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
   app.useGlobalFilters(new HttpExceptionFilter());
-  SwaggerModule.setup('api', app, document);
+  setupSwagger(app);
   await app.listen(3000);
 }
 bootstrap();
